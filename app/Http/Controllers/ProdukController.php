@@ -53,6 +53,7 @@ class ProdukController extends Controller
             "stok" => "required",
             "harga" => "required"
         ]);
+//        dd($request);die;
         $produk = new Produk();
         $produk->kode = $request->kode;
         $produk->kategori_id = $request->kategori;

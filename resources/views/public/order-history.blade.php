@@ -20,7 +20,8 @@
                         x-data="{}"
                         :class="'{{$trans['status']}}' === 'lunas' ? 'bg-green-300' : 'bg-red-300'"
                         >
-                        @if($trans['snap_token'] !== null) <button class="btn btn-primary" id="pay-button">Pay Now</button> @else {{ucwords($trans['status'])}} @endif
+                        @if($trans['snap_token'] !== null)
+                            <button class="btn btn-primary" id="pay-button">Pay Now</button> @else {{ucwords($trans['status'])}} @endif
 {{--                        {{ucwords($trans['status'])}}--}}
                     </th>
                 </tr>
@@ -33,7 +34,6 @@
                         <td class="border border-solid border-black border-1 p-2">{{number_format($item['harga'])}}</td>
                         <td class="border border-solid border-black border-1 p-2">{{number_format($item['total_harga'])}}</td>
                     </tr>
-
                 @endforeach
             @endforeach
         </table>

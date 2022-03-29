@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\StoreController;
+use App\Jobs\SendEmailVerifyJob;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use App\Notifications\EmailVerify;
@@ -89,7 +90,8 @@ class RegisterController extends Controller
             'remember_token' => Hash::make(Str::random(32))
         ]);
 
-        $user->notify(new EmailVerify($user));
+        SendEmailVerifyJob::dispatch($user->id)->onConnection('database');
+
         return $user;
     }
 

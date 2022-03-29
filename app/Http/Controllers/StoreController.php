@@ -25,7 +25,7 @@ class StoreController extends Controller
             $q->where('status_reservasi', 'open')->select('id', 'jam', 'tanggal', 'status_reservasi');
         }])
             ->select('tanggal')
-            ->whereDate('tanggal', '>=', Carbon::now()->startOfWeek()->toDateString())
+            ->whereDate('tanggal', '>=', Carbon::now()->addDays(7)->startOfWeek()->toDateString())
             ->groupBy('tanggal')
             ->get();
         return view('public.index', $data);
@@ -113,12 +113,15 @@ class StoreController extends Controller
     public function order_history(){
         $transaksi = Transaksi::with(['itemTransaksi.produk.kategori'])
                             ->where('user_id', Auth::user()->id)
+//                            ->where([['user_id', Auth::user()->id], ['status', 'belum bayar'], ['snap_token', '!=', null]])
                             ->orderBy('id', 'desc')
-                            ->get();
+                            ->paginate(10);
 
-        $data['transaksi'] = $transaksi->toArray();
+//        dd($transaksi->toArray());die;
+        $data['transaksi'] = $transaksi;
+//        dd($data['transaksi']);
         $data['count'] = 0;
         $data['snap_token'] = $transaksi->first()->snap_token;
-        return view('public.order-history', $data);
+        return view('public.order_history', $data);
     }
 }

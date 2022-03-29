@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('pembayarans', function (Blueprint $table) {
-            $table->string('payment_type', 20)->nullable();
+            //
         });
     }
 

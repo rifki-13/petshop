@@ -38,7 +38,6 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
   Route::resource('/item-transaksi', ItemTransaksiController::class);
   Route::get('/reservasi', [ReservasiController::class, 'index'])->name('reservasi.index');
   Route::get('/reservasi/daftar', [ReservasiController::class, 'listReservasi'])->name('reservasi.daftar');
-  Route::post('/addScheduleDay', [ReservasiController::class, 'addWeek'])->name('reservasi.addDay');
   Route::post('/changeStatus', [ReservasiController::class, 'changeStatus'])->name('reservasi.changeStatus');
   Route::post('/reservasi/res', [ReservasiController::class, 'changeReservationStatus'])->name('reservasi.res');
 });
@@ -86,9 +85,12 @@ Route::post('checkout', [\App\Http\Controllers\PaymentController::class, 'checko
 
 Route::get('/search/', [StoreController::class, 'search'])->name('store.search');
 
-
 Route::post('/reservasi', [StoreController::class, 'reservasi'])->name('reservasi.add');
 
 Route::get('/order-history', [StoreController::class, 'order_history'])->name('order-history');
 
 Route::post('/notification/handler', [\App\Http\Controllers\PaymentController::class, 'notification'])->name('notification-handler');
+
+Route::get('/payment/ongoing', [\App\Http\Controllers\PaymentController::class, 'ongoingPayment'])->name('ongoing-payment');
+
+Route::post('/payment/cancel', [\App\Http\Controllers\PaymentController::class, 'cancelPayment'])->name('cancel-payment');

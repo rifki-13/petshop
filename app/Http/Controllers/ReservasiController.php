@@ -8,6 +8,7 @@ use App\Notifications\ReservationResponse;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Reservasi;
+use Illuminate\Support\Facades\DB;
 
 class ReservasiController extends Controller
 {
@@ -38,24 +39,12 @@ class ReservasiController extends Controller
         return view('reservasi.index', $data);
     }
 
-    public function addDay() {
-        $latest = JadwalReservasi::select('tanggal')->orderBy('tanggal', 'desc')->first();
-        $tgl = Carbon::parse($latest->tanggal)->addDay()->toDateString();
+    public function addMonth() {
+        DB::beginTransaction();
+        $days = Carbon::now()->addDays(7)->daysInMonth;
+        $tanggal = Carbon::now()->addDays(7)->startOfMonth();
         $arr = ['09:00', '11:00', '14:00', '16:00'];
-        for($i=0;$i<4;$i++){
-            $day = new JadwalReservasi();
-            $day->tanggal = $tgl;
-            $day->jam = $arr[$i];
-            $day->save();
-
-        }
-        return redirect()->back();
-    }
-    public function addWeek() {
-        $latest = JadwalReservasi::select('tanggal')->orderBy('tanggal', 'desc')->first();
-        $tanggal = Carbon::parse($latest->tanggal)->addDay();
-        $arr = ['09:00', '11:00', '14:00', '16:00'];
-        for($i=0;$i<7;$i++){
+        for($i=0;$i<$days;$i++){
             $tgl = $tanggal->copy()->addDays($i);
             for($j=0;$j<4;$j++){
                 $day = new JadwalReservasi();
@@ -64,7 +53,19 @@ class ReservasiController extends Controller
                 $day->save();
             }
         }
-        return redirect()->action([ReservasiController::class, 'index']);
+        DB::commit();
+    }
+
+    public function deletePastSchedule() {
+        DB::beginTransaction();
+        $now = Carbon::now();
+        $firstDay = $now->copy()->startOfMonth();
+        $lastDay = $now->copy()->lastOfMonth();
+        $listSchedule = JadwalReservasi::whereBetween('tanggal', [$firstDay, $lastDay])->get();
+        foreach($listSchedule as $sch) {
+            $sch->delete();
+        }
+        DB::commit();
     }
 
     public function changeStatus(Request $request) {
