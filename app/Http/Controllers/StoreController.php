@@ -17,9 +17,14 @@ use Illuminate\Support\Facades\Auth;
 
 class StoreController extends Controller
 {
-    public function index()
+    public function index($search = null)
     {
-        $data['produk'] = Produk::all();
+        if(isset($search)) {
+            $data['produk'] = Produk::where('name', 'like', '%'.$search.'%')->get();
+        } else{
+            $data['produk'] = Produk::all();
+        }
+
 
         $data['tgl_reservasi'] = JadwalReservasi::with(['list_jam' => function($q) {
             $q->where('status_reservasi', 'open')->select('id', 'jam', 'tanggal', 'status_reservasi');
@@ -113,13 +118,10 @@ class StoreController extends Controller
     public function order_history(){
         $transaksi = Transaksi::with(['itemTransaksi.produk.kategori'])
                             ->where('user_id', Auth::user()->id)
-//                            ->where([['user_id', Auth::user()->id], ['status', 'belum bayar'], ['snap_token', '!=', null]])
                             ->orderBy('id', 'desc')
                             ->paginate(10);
 
-//        dd($transaksi->toArray());die;
         $data['transaksi'] = $transaksi;
-//        dd($data['transaksi']);
         $data['count'] = 0;
         $data['snap_token'] = $transaksi->first()->snap_token;
         return view('public.order_history', $data);

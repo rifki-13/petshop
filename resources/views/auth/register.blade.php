@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.base')
 
-@section('content')
+@section('body')
     <div class="sm:w-5/12 mb-10 container mx-auto">
         <div class="container mx-auto h-full lg:p-10">
             <header class="container mx-auto px-4 py-2 mt-10 lg:flex items-center h-full lg:mt-0">
